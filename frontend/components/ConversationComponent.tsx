@@ -132,12 +132,6 @@ export default function ConversationComponent({
     });
   }, []);
 
-    console.log('[RESON ENV]', {
-  agoraAppId: !!process.env.NEXT_PUBLIC_AGORA_APP_ID,
-  apiUrl: process.env.NEXT_PUBLIC_RESON_API_URL,
-  mcpUrl: process.env.NEXT_PUBLIC_RESON_MCP_URL,
-});
-
   // Auto-open details panel as soon as a new issue is recorded.
   useEffect(() => {
     if (connectionIssues.length > 0) {
@@ -511,6 +505,17 @@ export default function ConversationComponent({
   const handleEndConversation = useCallback(async () => {
     onEndConversation();
   }, [onEndConversation]);
+
+  console.log('[RESON COMPONENT CHECK]', {
+    AgentVisualizer,
+    MicButtonWithVisualizer,
+    RemoteUser,
+    MicrophoneSelector,
+    ConnectionStatusPanel,
+    QuickstartConversationLayout,
+    QuickstartPipelineMetrics,
+    QuickstartTranscriptPanel,
+  });
 
   return (
     <QuickstartConversationLayout
