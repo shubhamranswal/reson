@@ -211,6 +211,7 @@ export default function ConversationComponent({
   //     subsequent state changes (`joinSuccess` becoming true). That means
   //     AgoraVoiceAI.init() is called exactly once.
   useEffect(() => {
+    if (!rtmClient) return;
     if (!isReady || !joinSuccess) return;
 
     let cancelled = false;
@@ -378,9 +379,9 @@ export default function ConversationComponent({
       }
     };
 
-    rtmClient.addEventListener('message', handleRtmMessage);
+    rtmClient?.addEventListener('message', handleRtmMessage);
     return () => {
-      rtmClient.removeEventListener('message', handleRtmMessage);
+      rtmClient?.removeEventListener('message', handleRtmMessage);
     };
   }, [rtmClient, addConnectionIssue]);
 
@@ -489,7 +490,7 @@ export default function ConversationComponent({
         joinedUID.toString(),
       );
       await client?.renewToken(rtcToken);
-      await rtmClient.renewToken(rtmToken);
+      await rtmClient?.renewToken(rtmToken);
     } catch (error) {
       console.error('Failed to renew Agora token:', error);
     }
