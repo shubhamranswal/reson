@@ -6,6 +6,7 @@ from fastapi import FastAPI
 
 from app.api.events import router as events_router
 from app.api.incidents import router as incidents_router
+from app.api.rooms import router as rooms_router
 from app.mcp.server import server as mcp_server
 
 
@@ -51,6 +52,7 @@ def health():
 
 
 app.include_router(incidents_router)
+app.include_router(rooms_router)
 app.include_router(events_router)
 
 app.mount("/mcp", mcp_app)
