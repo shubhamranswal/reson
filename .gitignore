@@ -1,0 +1,81 @@
+# ================================
+# Environment / Secrets
+# ================================
+.env
+.env.*
+!.env.example
+!.env.local.example
+
+# ================================
+# Python / Backend
+# ================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+.venv/
+venv/
+env/
+ENV/
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+*.log
+
+# ================================
+# Node / Frontend
+# ================================
+node_modules/
+.next/
+out/
+dist/
+build/
+.turbo/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ================================
+# IDE / Editors
+# ================================
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# ================================
+# OS
+# ================================
+Thumbs.db
+Desktop.ini
+
+# ================================
+# Local development / runtime
+# ================================
+*.pid
+*.tmp
+*.temp
+
+# ================================
+# Test / coverage artifacts
+# ================================
+.pytest_cache/
+.coverage
+coverage/
+htmlcov/
+
+# ================================
+# Generated files
+# ================================
+*.generated.*
