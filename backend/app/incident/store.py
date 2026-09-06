@@ -1,6 +1,6 @@
 import os
 
-from app.models.incident import IncidentState, Severity
+from app.models.incident import IncidentRoom, IncidentState, Participant, Severity
 
 
 class IncidentStore:
@@ -8,23 +8,40 @@ class IncidentStore:
         self._incidents: dict[str, IncidentState] = {}
         self._active_incident_id: str | None = None
 
-        print(f"[STORE] Created store instance id={id(self)}")
+
+    def get_or_create_room(self, incident_id: str) -> IncidentRoom:
+        incident = self.get_incident(incident_id)
+
+        if incident.room is None:
+            incident.room = IncidentRoom(
+                channel=f"incident-{incident.id}"
+            )
+
+        return incident.room
+    
+    def add_participant(
+        self,
+        incident_id: str,
+        name: str,
+        role: str = "participant",
+    ) -> Participant:
+        incident = self.get_incident(incident_id)
+
+        participant = Participant(
+            id=f"participant-{len(incident.participants) + 1}",
+            name=name,
+            role=role,
+        )
+
+        incident.participants.append(participant)
+
+        return participant
 
     def get_active_incident(self) -> IncidentState:
         if self._active_incident_id is None:
             raise ValueError("No active incident selected.")
 
         incident = self.get_incident(self._active_incident_id)
-
-        print(
-            f"[STORE] instance={id(self)} "
-            f"active={incident.id} "
-            f"facts={len(incident.facts)} "
-            f"hypotheses={len(incident.hypotheses)} "
-            f"actions={len(incident.actions)} "
-            f"decisions={len(incident.decisions)} "
-            f"conflicts={len(incident.conflicts)}"
-        )
 
         return incident
 
@@ -43,7 +60,6 @@ class IncidentStore:
             opened_by=opened_by,
         )
 
-        # We'll add opened_by to the model shortly.
         self._incidents[incident.id] = incident
         self._active_incident_id = incident.id
 

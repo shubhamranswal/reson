@@ -80,6 +80,10 @@ class Participant(BaseModel):
     name: str
     role: str
 
+class IncidentRoom(BaseModel):
+    channel: str
+    agent_id: str | None = None
+
 
 class IncidentState(BaseModel):
     id: str
@@ -89,6 +93,7 @@ class IncidentState(BaseModel):
     opened_by: str | None = None
 
     participants: list[Participant] = Field(default_factory=list)
+    room: IncidentRoom | None = None
     facts: list[Fact] = Field(default_factory=list)
     hypotheses: list[Hypothesis] = Field(default_factory=list)
     decisions: list[Decision] = Field(default_factory=list)
