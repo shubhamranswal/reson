@@ -1,78 +1,88 @@
 # Reson
 
-### AI Incident Commander for real-time incident response
+## AI Incident Commander for real-time incident response
 
-Reson is a voice-first AI Incident Commander designed to help engineering teams reason through live technical incidents.
+Reson is a voice-first AI Incident Commander built to help engineering
+teams reason through live technical incidents.
 
-Instead of treating an incident conversation as a transcript, Reson maintains a structured operational picture of:
+Instead of turning an incident call into a transcript, Reson maintains a
+structured operational picture of the incident:
 
-- **Facts**: confirmed observations
-- **Hypotheses**: possible explanations that still need evidence
-- **Actions**: work that needs to be performed
-- **Decisions**: important decisions made by responders
-- **Conflicts**: contradictory or potentially inconsistent information
-- **Timeline**: meaningful events throughout the incident
+-   **Facts**: confirmed observations
+-   **Hypotheses**: possible explanations that still need evidence
+-   **Actions**: work that needs to be performed
+-   **Decisions**: important decisions made by responders
+-   **Conflicts**: contradictory or potentially inconsistent information
+-   **Timeline**: meaningful events throughout the incident
 
-The result is a system that turns a live voice conversation into an evolving incident state and an actionable post-incident report.
-
----
-
-## Why Reson?
-
-During a production incident, responders are usually juggling several things at once:
-
-- listening to multiple people
-- remembering what has already been established
-- separating evidence from assumptions
-- tracking actions and ownership
-- noticing contradictions
-- keeping the incident timeline coherent
-- communicating status to stakeholders
-
-Traditional incident tooling is mostly passive. Someone has to manually update tickets, notes, timelines, and status pages while the incident is happening.
-
-**Reson participates in the conversation itself.**
-
-It listens, reasons about the current incident context, selectively updates structured state, and can answer questions using that state.
+The result is a system that turns a live voice conversation into an
+evolving incident state and an actionable post-incident report.
 
 > **Voice in → structured operational intelligence out.**
 
----
+------------------------------------------------------------------------
 
-## Core Capabilities
+## Why Reson?
 
-### 🎙️ Real-time voice interaction
+During a production incident, responders are simultaneously trying to:
 
-Reson participates in a live Agora voice session and can be interrupted naturally during conversation.
+-   listen to multiple people
+-   remember what has already been established
+-   separate evidence from assumptions
+-   track actions and decisions
+-   notice contradictions
+-   keep the timeline coherent
+-   communicate status to stakeholders
 
-The AI uses:
+Traditional incident tooling is largely passive. Engineers have to
+manually update tickets, notes, timelines, and status information while
+the incident is unfolding.
 
-- Agora Conversational AI
-- Deepgram STT
-- OpenAI LLM
-- MiniMax TTS
+**Reson participates in the conversation itself.**
 
-The conversation is designed to feel like an incident commander participating in the response rather than a voice chatbot waiting for scripted commands.
+It listens to the live discussion, reasons over the current incident
+context, selectively updates structured state, and uses that state to
+help the team maintain a coherent operational picture.
 
-### 🧠 Context-aware incident reasoning
+------------------------------------------------------------------------
+
+# What Reson Does
+
+### Real-time voice interaction
+
+Reson participates in a live Agora voice session and supports natural,
+interruptible conversation.
+
+The voice pipeline combines:
+
+-   **Agora Conversational AI** for real-time agent interaction
+-   **Deepgram** for speech-to-text
+-   **OpenAI** for reasoning
+-   **MiniMax** for text-to-speech
+
+The goal is an incident commander that participates in the response
+rather than a voice chatbot waiting for scripted commands.
+
+### Context-aware incident reasoning
 
 Reson does not blindly record every sentence.
 
-It evaluates whether information is:
+It considers whether information is:
 
-1. materially relevant
-2. new
-3. sufficiently clear
-4. already represented in the incident state
-5. useful to the team's shared understanding
+1.  materially relevant
+2.  new
+3.  sufficiently clear
+4.  already represented in the incident state
+5.  useful to the team's shared understanding
 
-This keeps the incident state operationally useful instead of turning it into a noisy transcript.
+This keeps the operational state useful instead of turning it into
+another noisy transcript.
 
-### 🗂️ Structured incident state
+### Structured incident state
 
 Each incident maintains structured state for:
 
-```text
+``` text
 Incident
 ├── Facts
 ├── Hypotheses
@@ -84,76 +94,87 @@ Incident
 └── Room
 ```
 
-The incident state is the source of truth for operational information.
+The incident state is the **source of truth** for operational
+information.
 
-### 🔎 Hypothesis tracking
+### Hypothesis tracking
 
-Responders can discuss possible causes without prematurely treating them as facts.
+Responders can discuss possible causes without prematurely treating them
+as facts.
 
 Hypotheses can be:
 
-- unverified
-- supported
-- contradicted
+-   unverified
+-   supported
+-   contradicted
 
-This preserves the distinction between **what we know** and **what we think**.
+This preserves the distinction between **what we know** and **what we
+think**.
 
-### ⚠️ Conflict detection
+### Conflict detection
 
 Reson can identify meaningful contradictions and missing context.
 
-It avoids declaring a conflict merely because two statements sound surprising. When context is insufficient, it can ask a focused question to determine whether the observations actually refer to the same system, property, or time window.
+It does not treat every surprising statement as a conflict. When context
+is insufficient, it can ask a focused question to determine whether
+observations actually refer to the same system, property, or time
+window.
 
-### 🛠️ MCP-powered incident tools
+### MCP-powered incident tools
 
 Reson uses an MCP server to interact with structured incident state.
 
-Current capabilities include tools for:
+Current tool capabilities include:
 
-- reading incident state
-- recording facts, hypotheses, and actions
-- recording decisions
-- recording conflicts
-- resolving conflicts
-- supporting hypotheses
-- contradicting hypotheses
-- resolving incidents
-- creating incidents
-- listing incidents
-- switching incidents
+-   reading incident state
+-   recording facts, hypotheses, and actions
+-   recording decisions
+-   recording conflicts
+-   resolving conflicts
+-   supporting hypotheses
+-   contradicting hypotheses
+-   resolving incidents
+-   creating incidents
+-   listing incidents
+-   switching incidents
 
-This keeps the AI's reasoning layer separate from the incident-state implementation.
+This keeps the AI reasoning layer separate from the incident-state
+implementation.
 
-### 🔄 Multi-incident support
+### Multi-incident support
 
 Reson supports multiple incidents within the same application.
 
-Each incident has its own structured state, and users can switch the active incident during an investigation.
+Each incident has its own structured state, and users can switch the
+active incident during an investigation.
 
-The reporting workspace can independently select incidents without changing the active Reson conversation context.
+The reporting workspace can independently select incidents without
+changing the active Reson conversation context.
 
-### 📊 Incident reporting
+### Incident reporting
 
-The `/reports` workspace turns incident state into a structured report containing:
+The `/reports` workspace turns incident state into a structured report
+containing:
 
-- executive summary
-- KPI cards
-- incident timeline
-- hypothesis breakdown
-- action breakdown
-- conflicts and risks
-- decisions
-- action items
+-   executive summary
+-   KPI cards
+-   incident timeline
+-   hypothesis breakdown
+-   action breakdown
+-   conflicts and risks
+-   decisions
+-   action items
 
 Reports can be exported as PDF.
 
-### 👥 Participant-aware architecture
+### Participant-aware architecture
 
-The incident model supports named participants and room state.
+The incident model also supports named participants and room state.
 
-The current Phase 4 work introduces the foundation for a shared incident room:
+The current implementation provides the foundation for a shared incident
+room:
 
-```text
+``` text
 Incident
    │
    ├── Participants
@@ -166,61 +187,67 @@ The intended architecture is:
 
 > **One incident → one room → one Reson → many participants**
 
-The full multi-browser shared Reson session is the next implementation step.
+The shared multi-browser session is the next extension of this
+foundation.
 
----
+------------------------------------------------------------------------
 
 # Architecture
 
-```text
-                         ┌──────────────────────┐
-                         │      Browser UI      │
-                         │      Next.js         │
-                         └──────────┬───────────┘
-                                    │
-                         Voice / UI │ API
-                                    │
-             ┌──────────────────────┴──────────────────────┐
-             │                                             │
-             ▼                                             ▼
-┌─────────────────────────┐                  ┌─────────────────────────┐
-│ Agora Conversational AI │                  │      FastAPI Backend    │
-│                         │                  │                         │
-│  Deepgram STT           │                  │     IncidentStore       │
-│  OpenAI LLM             │                  │           │             │
-│  MiniMax TTS            │                  │           ▼             │
-│                         │                  │    IncidentState        │
-│       Reson             │                  │                         │
-└────────────┬────────────┘                  └────────────┬────────────┘
-             │                                            │
-             │ MCP                                        │
-             └──────────────────────┬─────────────────────┘
-                                    ▼
-                         ┌──────────────────────┐
-                         │      MCP Server      │
-                         │                      │
-                         │ Incident tools       │
-                         │ State management     │
-                         └──────────────────────┘
+![Reson AI Incident Coordination Architecture](docs/arch.png)
+
+The architecture is centered around a simple principle:
+
+> **Incident State is the source of truth.**
+
+Reson does not maintain a separate authoritative copy of the incident.
+When current state matters, the agent reads and updates the structured
+incident state through MCP.
+
+This lets the voice layer, API layer, tool layer, and reporting layer
+operate around the same underlying incident model.
+
+### High-level flow
+
+``` text
+Incident Team
+      │
+      ▼
+   Agora
+ Live Voice Room
+      │
+      ▼
+ Reson AI Agent
+ Listen · Understand · Reason · Coordinate
+      │
+      ├──────────────► Incident Memory
+      │
+      ├──────────────► Context Engine
+      │
+      └──────────────► Tool Calling
+                            │
+                       ┌────┼────┐
+                       ▼    ▼    ▼
+                     Logs Metrics Deploy
+                       │    │    │
+                       └────┼────┘
+                            ▼
+                      Incident State
+                       │    │    │
+                       ▼    ▼    ▼
+                     Facts Actions Timeline
+                            │
+                            ▼
+                      Live Dashboard
 ```
 
-## Key architectural principle
-
-**IncidentStore is the source of truth.**
-
-The AI does not maintain a separate copy of the incident state as the authoritative record.
-
-When current state matters, Reson reads the structured incident state through MCP.
-
-This allows the conversation layer, API layer, and reporting layer to operate around the same underlying incident model.
-
----
+------------------------------------------------------------------------
 
 # Incident State Model
 
 A simplified incident looks like:
 
-```json
+``` json
 {
   "id": "INC-001",
   "title": "Payment Service Outage",
@@ -244,9 +271,7 @@ A simplified incident looks like:
 
 Confirmed information.
 
-Example:
-
-```text
+``` text
 Payment API error rate increased to 42%.
 ```
 
@@ -254,9 +279,7 @@ Payment API error rate increased to 42%.
 
 Possible explanations that have not yet been confirmed.
 
-Example:
-
-```text
+``` text
 Database connection exhaustion may be contributing to the failures.
 ```
 
@@ -264,9 +287,7 @@ Database connection exhaustion may be contributing to the failures.
 
 Work that needs to happen.
 
-Example:
-
-```text
+``` text
 Inspect database connection pool utilization.
 ```
 
@@ -274,9 +295,7 @@ Inspect database connection pool utilization.
 
 Important decisions made by responders.
 
-Example:
-
-```text
+``` text
 Rollback the latest payment-service deployment.
 ```
 
@@ -284,28 +303,25 @@ Rollback the latest payment-service deployment.
 
 Potentially contradictory observations.
 
-Example:
-
-```text
+``` text
 Application reports database connectivity failures,
 while database health checks remain green.
 ```
 
----
+------------------------------------------------------------------------
 
 # MCP Layer
 
 The FastAPI backend exposes the MCP server at:
 
-```text
+``` text
 /mcp
 ```
 
-The MCP server provides structured tools for interacting with the incident state.
+The MCP layer provides structured tools for interacting with incident
+state.
 
-Example tool categories:
-
-```text
+``` text
 Read
 ├── get_incident_state
 └── list_incidents
@@ -326,15 +342,14 @@ Incident management
 └── switch_incident
 ```
 
-The AI is instructed to use tools when they improve the operational picture, not simply because every user utterance could be classified.
+The agent is instructed to use tools when they improve the operational
+picture, not simply because every user utterance could be classified.
 
----
+------------------------------------------------------------------------
 
 # Application Structure
 
-The project is split into two main applications:
-
-```text
+``` text
 reson/
 │
 ├── backend/
@@ -364,26 +379,27 @@ reson/
     └── types/
 ```
 
----
+------------------------------------------------------------------------
 
 # Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js / React / TypeScript |
-| Backend | FastAPI / Python |
-| Voice | Agora Conversational AI |
-| RTC / RTM | Agora |
-| Speech-to-Text | Deepgram |
-| LLM | OpenAI |
-| Text-to-Speech | MiniMax |
-| Agent tools | MCP |
-| Incident state | In-memory IncidentStore |
-| Validation / models | Pydantic |
-| Reports | Next.js reporting workspace |
-| PDF export | Browser-side PDF generation |
+  Layer                        Technology
+  ---------------------------- ------------------------------
+  Frontend                     Next.js / React / TypeScript
+  Backend                      FastAPI / Python
+  Voice                        Agora Conversational AI
+  RTC / RTM                    Agora
+  Speech-to-Text               Deepgram
+  LLM                          OpenAI
+  Text-to-Speech               MiniMax
+  Agent tools                  MCP
+  Incident state               In-memory `IncidentStore`
+  Validation / models          Pydantic
+  Reporting                    Next.js reporting workspace
+  PDF export                   Browser-side PDF generation
+  Public MCP access for demo   Cloudflare Tunnel
 
----
+------------------------------------------------------------------------
 
 # Running Locally
 
@@ -391,110 +407,137 @@ reson/
 
 You will need:
 
-- Node.js
-- pnpm
-- Python
-- Agora credentials
-- configured LLM/STT/TTS services
-- a running FastAPI backend
-- a running Next.js frontend
+-   Node.js
+-   pnpm
+-   Python
+-   Agora credentials
+-   configured LLM / STT / TTS services
+-   FastAPI
+-   Next.js
+-   `cloudflared` for the public MCP endpoint used by the demo
 
-## Backend
+## 1. Start the backend
 
-From the backend directory:
-
-```bash
+``` bash
 cd backend
 pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
 ```
 
-Start FastAPI:
+Backend:
 
-```bash
-uvicorn app.main:app --reload
-```
-
-The backend runs on:
-
-```text
+``` text
 http://localhost:8000
 ```
 
 Health check:
 
-```text
+``` text
 GET /health
 ```
 
-MCP endpoint:
+Local MCP endpoint:
 
-```text
+``` text
 http://localhost:8000/mcp/
 ```
 
-## Frontend
+## 2. Expose the backend with Cloudflare Tunnel
 
-From the frontend directory:
+In a second terminal:
 
-```bash
+``` bash
+cloudflared tunnel --url http://localhost:8000
+```
+
+Cloudflared will provide a public URL similar to:
+
+``` text
+https://xxxx.trycloudflare.com
+```
+
+Use the public MCP endpoint as:
+
+``` text
+https://xxxx.trycloudflare.com/mcp/
+```
+
+Set:
+
+``` env
+RESON_MCP_URL=https://xxxx.trycloudflare.com/mcp/
+```
+
+Then restart the Next.js development server.
+
+> **Demo note:** the quick tunnel URL changes when the tunnel is
+> restarted. If it changes, update `RESON_MCP_URL` and restart the
+> frontend.
+
+## 3. Start the frontend
+
+From another terminal:
+
+``` bash
 cd frontend
 pnpm install
 pnpm dev
 ```
 
-The Next.js application runs on:
+Frontend:
 
-```text
+``` text
 http://localhost:3000
 ```
 
----
+------------------------------------------------------------------------
 
 # Environment Variables
 
-The exact values depend on your local deployment, but the application expects Agora and Reson configuration such as:
+The application expects Agora and Reson configuration such as:
 
-```env
+``` env
 NEXT_PUBLIC_AGORA_APP_ID=...
 NEXT_AGORA_APP_CERTIFICATE=...
 RESON_MCP_URL=...
 ```
 
-Additional provider credentials may be required depending on whether reseller presets or BYOK integrations are being used.
+Additional provider credentials may be required depending on the
+configured LLM, STT, and TTS integrations.
 
 **Never commit credentials or `.env` files to the repository.**
 
----
+------------------------------------------------------------------------
 
 # API Highlights
 
 ## Incidents
 
-```http
+``` http
 GET /api/incidents
 ```
 
 List incidents.
 
-```http
+``` http
 GET /api/incidents/current
 ```
 
 Get the currently active incident.
 
-```http
+``` http
 GET /api/incidents/{incident_id}
 ```
 
 Get a specific incident.
 
-```http
+``` http
 POST /api/incidents
 ```
 
 Create an incident.
 
-```http
+``` http
 POST /api/incidents/switch
 ```
 
@@ -502,7 +545,7 @@ Switch the active incident.
 
 ## Rooms
 
-```http
+``` http
 POST /api/rooms/join
 ```
 
@@ -510,7 +553,7 @@ Register a participant in an incident room.
 
 Example:
 
-```json
+``` json
 {
   "incident_id": "INC-001",
   "name": "Shubham"
@@ -519,7 +562,7 @@ Example:
 
 Example response:
 
-```json
+``` json
 {
   "incident_id": "INC-001",
   "channel": "incident-INC-001",
@@ -534,23 +577,24 @@ Example response:
 
 The room channel is deterministic:
 
-```text
+``` text
 INC-001 → incident-INC-001
 ```
 
-This is the foundation for the shared multi-user room architecture.
+This provides the foundation for a shared incident room.
 
----
+------------------------------------------------------------------------
 
 # Example Incident Conversation
 
 A responder says:
 
-> "Payment failures started about ten minutes ago. The database team says the database is healthy, but we're also seeing query timeouts."
+> "Payment failures started about ten minutes ago. The database team
+> says the database is healthy, but we're also seeing query timeouts."
 
 Reson can maintain structured state such as:
 
-```text
+``` text
 FACT
 Payment failures started approximately 10 minutes ago.
 
@@ -567,114 +611,117 @@ TIMELINE
 Payment failures began approximately 10 minutes ago.
 ```
 
-If later evidence establishes that two observations genuinely conflict, Reson can represent that conflict instead of silently choosing one side.
+If later evidence establishes that two observations genuinely conflict,
+Reson can represent that conflict instead of silently choosing one side.
 
----
+------------------------------------------------------------------------
 
 # Reporting
 
 Navigate to:
 
-```text
+``` text
 /reports
 ```
 
-The reporting workspace provides an incident-focused view of the structured state.
+The reporting workspace provides an incident-focused view of the
+structured state.
 
-It includes:
-
-```text
+``` text
 Executive Summary
-       ↓
+        ↓
 KPI Cards
-       ↓
+        ↓
 Timeline
-       ↓
+        ↓
 Hypotheses
-       ↓
+        ↓
 Actions
-       ↓
+        ↓
 Conflicts / Risks
-       ↓
+        ↓
 Decisions
 ```
 
 Reports can be selected independently by incident and exported to PDF.
 
----
+------------------------------------------------------------------------
 
-# Demo Flow
+# Recommended Demo Flow
 
-A concise demonstration can follow this sequence:
+A strong demo should tell one continuous story rather than showing
+disconnected features.
 
 ### 1. Start with an active incident
 
 Show:
 
-```text
+``` text
 Payment Service Outage
 SEV-1
 Investigating
 ```
 
-### 2. Start a voice conversation
+### 2. Start the voice conversation
 
 Introduce Reson as the AI Incident Commander.
 
-### 3. Feed it an evolving incident
+### 3. Feed Reson an evolving incident
 
 Discuss:
 
-- elevated payment failures
-- database latency
-- deployment timing
-- possible root causes
-- actions being considered
+-   elevated payment failures
+-   database latency
+-   deployment timing
+-   possible root causes
+-   actions being considered
 
-### 4. Show structured state
+### 4. Show the structured state
 
 Demonstrate that Reson has separated:
 
-```text
+``` text
 Facts
 Hypotheses
 Actions
 Timeline
 ```
 
-rather than simply displaying a transcript.
+rather than simply producing a transcript.
 
 ### 5. Introduce conflicting evidence
 
 Give Reson two observations that require contextual reasoning.
 
-Show the conflict/missing information handling.
+Show how it preserves uncertainty or surfaces the conflict instead of
+inventing an explanation.
 
 ### 6. Open `/reports`
 
-Show the incident summary and timeline.
+Show the generated incident summary, timeline, hypotheses, actions, and
+risks.
 
 ### 7. Export the report
 
 Download the generated PDF.
 
-The story becomes:
+The complete story:
 
-```text
+``` text
 Live voice conversation
-        ↓
-AI reasoning
-        ↓
-Structured incident state
-        ↓
-Operational visibility
-        ↓
-Incident report
+          ↓
+     AI reasoning
+          ↓
+ Structured incident state
+          ↓
+ Operational visibility
+          ↓
+    Incident report
 ```
 
----
+------------------------------------------------------------------------
 
-# Design Philosophy
+# Design Principles
 
 ### Don't transcribe. Understand.
 
@@ -690,90 +737,70 @@ Conflicting evidence is operationally valuable information.
 
 ### Don't make the AI the database.
 
-The incident state belongs to the application. Reson reasons over it through MCP.
+The incident state belongs to the application. Reson reasons over it
+through MCP.
 
 ### Keep humans in the loop.
 
 Critical operational actions can require human confirmation.
 
----
+------------------------------------------------------------------------
 
 # Current Status
 
 ### Completed
 
-- [x] Real-time voice incident interaction
-- [x] Interruptible conversational AI
-- [x] Structured incident state
-- [x] Facts / hypotheses / actions
-- [x] Decisions
-- [x] Conflict tracking and resolution
-- [x] Hypothesis support / contradiction
-- [x] Incident lifecycle
-- [x] MCP incident tools
-- [x] Multi-incident architecture
-- [x] Silent incident switching
-- [x] Multi-incident reporting
-- [x] Executive summary
-- [x] Timeline and breakdown views
-- [x] PDF report export
-- [x] Participant model
-- [x] Incident room foundation
-- [x] `/api/rooms/join`
+-   [x] Real-time voice incident interaction
+-   [x] Interruptible conversational AI
+-   [x] Structured incident state
+-   [x] Facts / hypotheses / actions
+-   [x] Decisions
+-   [x] Conflict tracking and resolution
+-   [x] Hypothesis support / contradiction
+-   [x] Incident lifecycle
+-   [x] MCP incident tools
+-   [x] Multi-incident architecture
+-   [x] Silent incident switching
+-   [x] Multi-incident reporting
+-   [x] Executive summary
+-   [x] Timeline and breakdown views
+-   [x] PDF report export
+-   [x] Participant model
+-   [x] Incident room foundation
+-   [x] `/api/rooms/join`
 
-### Next
+### Next extension
 
-- [ ] Complete shared multi-browser Agora room
-- [ ] Start one Reson agent per incident room
-- [ ] Allow multiple participants to share the same Reson session
-- [ ] Participant presence and role-aware interaction
+The participant and room model provides the foundation for:
 
----
+-   shared multi-browser Agora rooms
+-   one Reson agent per incident room
+-   multiple participants sharing one Reson session
+-   participant presence and role-aware interaction
 
-# Roadmap
-
-```text
-Phase 1
-Stabilize
-   ✓
-
-Phase 2
-Multi-incident architecture
-   ✓
-
-Phase 3
-Reporting
-   ✓
-
-Phase 4
-Multi-user incident rooms
-   ├── Room foundation       ✓
-   ├── Participant join      ✓
-   ├── Shared Agora session  → next
-   └── Multi-browser E2E     → next
-```
-
----
+------------------------------------------------------------------------
 
 # Project Vision
 
 Incident response should not require engineers to simultaneously be:
 
-- investigators
-- note takers
-- meeting facilitators
-- timeline maintainers
-- status communicators
+-   investigators
+-   note takers
+-   meeting facilitators
+-   timeline maintainers
+-   status communicators
 
-Reson is designed to become the operational layer between the conversation and the incident record.
+Reson is designed to become the operational layer between the
+conversation and the incident record.
 
 The long-term goal is simple:
 
-> **When an incident gets chaotic, Reson keeps the team's understanding coherent.**
+> **When an incident gets chaotic, Reson keeps the team's understanding
+> coherent.**
 
----
+------------------------------------------------------------------------
 
 ## Built for real-time incident response
 
-**Reson**  
+**Reson**\
 *AI Incident Commander*
