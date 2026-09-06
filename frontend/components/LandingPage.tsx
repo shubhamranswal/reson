@@ -58,10 +58,6 @@ const AgoraProvider = dynamic(
 export default function LandingPage() {
   const [showConversation, setShowConversation] = useState(false);
 
-  const sendAgentMessageRef = useRef<
-    ((message: string) => Promise<void>) | null
-  >(null);
-
   // Preload heavy modules on mount so they're already cached when the user
   // clicks "Try it Now" — eliminates the ~1.8s dynamic-import delay.
   useEffect(() => {
