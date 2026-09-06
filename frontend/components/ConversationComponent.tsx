@@ -132,13 +132,11 @@ export default function ConversationComponent({
     });
   }, []);
 
-
-  console.log('[RESON ENV]', {
+    console.log('[RESON ENV]', {
   agoraAppId: !!process.env.NEXT_PUBLIC_AGORA_APP_ID,
   apiUrl: process.env.NEXT_PUBLIC_RESON_API_URL,
-  mcpUrl: process.env.RESON_MCP_URL,
+  mcpUrl: process.env.NEXT_PUBLIC_RESON_MCP_URL,
 });
-
 
   // Auto-open details panel as soon as a new issue is recorded.
   useEffect(() => {
@@ -514,11 +512,71 @@ export default function ConversationComponent({
     onEndConversation();
   }, [onEndConversation]);
 
-return (
-  <div className="flex h-full items-center justify-center">
-    <div className="text-xl">
-      Reson conversation loaded
-    </div>
-  </div>
-);
+  return (
+    <QuickstartConversationLayout
+      statusPanel={
+        <ConnectionStatusPanel
+          connectionState={connectionState}
+          connectionSeverity={connectionSeverity}
+          connectionIssues={connectionIssues}
+          isOpen={isConnectionDetailsOpen}
+          onToggle={() => setIsConnectionDetailsOpen((open) => !open)}
+        />
+      }
+      pipelineMetrics={<QuickstartPipelineMetrics metrics={agentMetrics} />}
+      transcriptPanel={
+        <QuickstartTranscriptPanel
+          messageList={messageList}
+          currentInProgressMessage={currentInProgressMessage}
+          agentUID={agentUID}
+        />
+      }
+
+      visualizer={
+        <div
+          className="relative flex h-full min-h-[24rem] w-full flex-col items-center justify-center"
+          role="region"
+          aria-label="AI agent status visualization"
+        >
+          <AgentVisualizer state={visualizerState} size="lg" />
+
+          <p className="mt-1 text-xs text-muted-foreground">
+            {agentState === AgentState.LISTENING
+              ? 'Tell Reson what you are seeing.'
+              : agentState === AgentState.SPEAKING
+                ? 'Reson is responding.'
+                : 'Maintaining the incident picture.'}
+          </p>
+
+          {remoteUsers.map((user) => (
+            <div key={user.uid} className="hidden">
+              <RemoteUser user={user} />
+            </div>
+          ))}
+        </div>
+      }
+      controls={
+        <div
+          className="mx-auto flex w-fit items-center gap-3 rounded-full border border-border bg-card/80 px-4 py-2 backdrop-blur-md"
+          role="group"
+          aria-label="Audio controls"
+        >
+          <div className="conversation-mic-host flex items-center justify-center">
+            <MicButtonWithVisualizer
+              isEnabled={isEnabled}
+              setIsEnabled={setIsEnabled}
+              track={localMicrophoneTrack}
+              onToggle={handleMicToggle}
+              className="overflow-visible"
+              aria-label={isEnabled ? 'Mute microphone' : 'Unmute microphone'}
+              enabledColor="hsl(var(--primary))"
+              disabledColor="hsl(var(--destructive))"
+            />
+          </div>
+          <MicrophoneSelector localMicrophoneTrack={localMicrophoneTrack} />
+        </div>
+      }
+      onEndConversation={handleEndConversation}
+    />
+  );
 }
