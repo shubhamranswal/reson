@@ -616,6 +616,60 @@ Reson can represent that conflict instead of silently choosing one side.
 
 ------------------------------------------------------------------------
 
+# Screenshots & Sample Report
+
+The repository includes screenshots showing the main Reson workflow and a
+sample incident report generated from the structured incident state.
+
+## Application Screenshots
+
+### Reson Home
+
+The main incident workspace showing the active incident, structured state,
+and incident room entry point.
+
+![Reson Home](docs/screenshots/reson_home.png)
+
+### Reson Talking
+
+Live voice interaction with Reson, including the real-time transcript and
+structured incident state updating during the conversation.
+
+![Reson Talking](docs/screenshots/reson_talking.png)
+
+### Reson Reports
+
+The incident reporting workspace with incident selection and generated
+report information.
+
+![Reson Reports](docs/screenshots/reson_reports.png)
+
+## Sample Incident Report
+
+A sample PDF report for the Payment Service Outage incident is included
+with the project:
+
+**[INC-001 Payment Service Outage Report](docs/reports/INC-001-payment-service-outage-report.pdf)**
+
+The report demonstrates how Reson turns structured incident state into a
+post-incident artifact containing the incident summary, timeline,
+hypotheses, actions, conflicts, decisions, and other operational context.
+
+Recommended repository layout:
+
+``` text
+docs/
+├── arch.png
+├── screenshots/
+│   ├── reson_home.png
+│   ├── reson_talking.png
+│   └── reson_reports.png
+└── reports/
+    └── INC-001-payment-service-outage-report.pdf
+```
+
+------------------------------------------------------------------------
+
 # Reporting
 
 Navigate to:
