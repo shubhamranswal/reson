@@ -9,8 +9,9 @@ import AgoraRTC, {
   useJoin,
   usePublish,
   RemoteUser,
-  UID,
 } from 'agora-rtc-react';
+
+import type { UID } from 'agora-rtc-react';
 import {
   AgoraVoiceAI,
   AgoraVoiceAIEvents,
@@ -211,7 +212,7 @@ export default function ConversationComponent({
   //     subsequent state changes (`joinSuccess` becoming true). That means
   //     AgoraVoiceAI.init() is called exactly once.
   useEffect(() => {
-    if (!rtmClient) return;
+
     if (!isReady || !joinSuccess) return;
 
     let cancelled = false;
@@ -332,6 +333,7 @@ export default function ConversationComponent({
 
   // Raw RTM parsing is kept as a fallback for signaling-level errors and SAL status.
   useEffect(() => {
+    if (!rtmClient) return;
     const handleRtmMessage = (event: {
       message: string | Uint8Array;
       publisher: string;
@@ -379,9 +381,9 @@ export default function ConversationComponent({
       }
     };
 
-    rtmClient?.addEventListener('message', handleRtmMessage);
+    rtmClient.addEventListener('message', handleRtmMessage);
     return () => {
-      rtmClient?.removeEventListener('message', handleRtmMessage);
+      rtmClient.removeEventListener('message', handleRtmMessage);
     };
   }, [rtmClient, addConnectionIssue]);
 
@@ -490,7 +492,9 @@ export default function ConversationComponent({
         joinedUID.toString(),
       );
       await client?.renewToken(rtcToken);
-      await rtmClient?.renewToken(rtmToken);
+      if (rtmClient) {
+        await rtmClient.renewToken(rtmToken);
+      }
     } catch (error) {
       console.error('Failed to renew Agora token:', error);
     }
@@ -501,6 +505,17 @@ export default function ConversationComponent({
   const handleEndConversation = useCallback(async () => {
     onEndConversation();
   }, [onEndConversation]);
+
+  console.log('[RESON COMPONENT CHECK]', {
+    AgentVisualizer,
+    MicButtonWithVisualizer,
+    RemoteUser,
+    MicrophoneSelector,
+    ConnectionStatusPanel,
+    QuickstartConversationLayout,
+    QuickstartPipelineMetrics,
+    QuickstartTranscriptPanel,
+  });
 
   return (
     <QuickstartConversationLayout

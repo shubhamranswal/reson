@@ -1146,7 +1146,7 @@ export async function POST(request: NextRequest) {
           mcpServers: [
             {
               name: 'reson-incident-commander',
-              endpoint: requireEnv('RESON_MCP_URL'),
+              endpoint: requireEnv('NEXT_PUBLIC_RESON_MCP_URL'),
             },
           ],
           params: {

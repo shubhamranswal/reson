@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   try {
     const response = await fetch(
-      `${process.env.RESON_API_URL}/api/incidents/current`,
+      `${process.env.NEXT_PUBLIC_RESON_API_URL}/api/incidents/current`,
       {
         cache: 'no-store',
       },

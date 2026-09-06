@@ -1,7 +1,7 @@
 import requests
 
 
-BASE_URL = "http://127.0.0.1:8000"
+BASE_URL = "https://reson-0vtk.onrender.com"
 
 
 def create_incident(title: str, severity: str, opened_by: str):
