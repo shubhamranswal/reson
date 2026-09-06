@@ -46,6 +46,11 @@ def create_incident(request: CreateIncidentRequest):
 def current_incident():
     return incident_store.get_active_incident()
 
+@router.get("/{incident_id}")
+def get_incident(incident_id: str):
+    incident = incident_store.get_incident(incident_id)
+    return incident.model_dump(mode="json")
+
 
 @router.post("/switch")
 def switch_incident(request: SwitchIncidentRequest):
