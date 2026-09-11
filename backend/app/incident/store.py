@@ -24,6 +24,7 @@ class IncidentStore:
         incident_id: str,
         name: str,
         role: str = "participant",
+        agora_uid: str | None = None,
     ) -> Participant:
         incident = self.get_incident(incident_id)
 
@@ -31,6 +32,7 @@ class IncidentStore:
             id=f"participant-{len(incident.participants) + 1}",
             name=name,
             role=role,
+            agora_uid=agora_uid,
         )
 
         incident.participants.append(participant)
