@@ -53,3 +53,30 @@ def join_room(request: JoinRoomRequest):
         ],
         "agent_id": room.agent_id,
     }
+
+@router.delete("/{incident_id}/agent")
+def clear_room_agent(incident_id: str):
+    room = incident_store.get_or_create_room(incident_id)
+
+    room.agent_id = None
+
+    return {
+        "incident_id": incident_id,
+        "agent_id": None,
+        "agent_started": False,
+    }
+
+@router.put("/{incident_id}/agent")
+def set_room_agent(
+    incident_id: str,
+    agent_id: str,
+):
+    room = incident_store.get_or_create_room(incident_id)
+
+    room.agent_id = agent_id
+
+    return {
+        "incident_id": incident_id,
+        "agent_id": room.agent_id,
+        "agent_started": True,
+    }
