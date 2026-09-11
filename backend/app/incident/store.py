@@ -26,7 +26,7 @@ class IncidentStore:
         role: str = "participant",
         agora_uid: str | None = None,
     ) -> Participant:
-        room = self.get_room(incident_id)
+        room = self.get_or_create_room(incident_id)
 
         existing = next(
             (
@@ -43,7 +43,7 @@ class IncidentStore:
             return existing
 
         participant = Participant(
-            id=f"participant-{...}",
+            id=f"participant-{agora_uid}",
             name=name,
             role=role,
             agora_uid=agora_uid,
@@ -57,7 +57,7 @@ class IncidentStore:
         incident_id: str,
         agora_uid: str,
     ) -> None:
-        room = self.get_room(incident_id)
+        room = self.get_or_create_room(incident_id)
 
         room.participants = [
             p
