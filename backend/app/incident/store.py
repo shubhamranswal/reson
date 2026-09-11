@@ -1,7 +1,4 @@
-import os
-
 from app.models.incident import IncidentRoom, IncidentState, Participant, Severity
-
 
 class IncidentStore:
     def __init__(self):
@@ -26,12 +23,12 @@ class IncidentStore:
         role: str = "participant",
         agora_uid: str | None = None,
     ) -> Participant:
-        room = self.get_or_create_room(incident_id)
+        incident = self.get_incident(incident_id)
 
         existing = next(
             (
                 p
-                for p in room.participants
+                for p in incident.participants
                 if p.agora_uid == agora_uid
             ),
             None,
@@ -49,22 +46,22 @@ class IncidentStore:
             agora_uid=agora_uid,
         )
 
-        room.participants.append(participant)
+        incident.participants.append(participant)
         return participant
-    
+
+
     def remove_participant(
         self,
         incident_id: str,
         agora_uid: str,
     ) -> None:
-        room = self.get_or_create_room(incident_id)
+        incident = self.get_incident(incident_id)
 
-        room.participants = [
+        incident.participants = [
             p
-            for p in room.participants
+            for p in incident.participants
             if p.agora_uid != agora_uid
         ]
-
     def get_active_incident(self) -> IncidentState:
         if self._active_incident_id is None:
             raise ValueError("No active incident selected.")
