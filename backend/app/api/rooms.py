@@ -18,6 +18,11 @@ class SetAgentRequest(BaseModel):
     agent_id: str
 
 
+class LeaveRoomRequest(BaseModel):
+    incident_id: str
+    agora_uid: str
+
+
 @router.get("/{incident_id}")
 def get_room(incident_id: str):
     incident = incident_store.get_incident(incident_id)
@@ -88,7 +93,7 @@ def set_room_agent(
 
 
 @router.post("/leave")
-def leave_room(request: JoinRoomRequest):
+def leave_room(request: LeaveRoomRequest):
     incident = incident_store.get_incident(request.incident_id)
 
     incident_store.remove_participant(
