@@ -26,18 +26,44 @@ class IncidentStore:
         role: str = "participant",
         agora_uid: str | None = None,
     ) -> Participant:
-        incident = self.get_incident(incident_id)
+        room = self.get_room(incident_id)
+
+        existing = next(
+            (
+                p
+                for p in room.participants
+                if p.agora_uid == agora_uid
+            ),
+            None,
+        )
+
+        if existing:
+            existing.name = name
+            existing.role = role
+            return existing
 
         participant = Participant(
-            id=f"participant-{len(incident.participants) + 1}",
+            id=f"participant-{...}",
             name=name,
             role=role,
             agora_uid=agora_uid,
         )
 
-        incident.participants.append(participant)
-
+        room.participants.append(participant)
         return participant
+    
+    def remove_participant(
+        self,
+        incident_id: str,
+        agora_uid: str,
+    ) -> None:
+        room = self.get_room(incident_id)
+
+        room.participants = [
+            p
+            for p in room.participants
+            if p.agora_uid != agora_uid
+        ]
 
     def get_active_incident(self) -> IncidentState:
         if self._active_incident_id is None:
