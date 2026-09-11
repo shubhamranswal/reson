@@ -46,6 +46,14 @@ import {
 import { QuickstartTranscriptPanel } from './QuickstartTranscriptPanel';
 import type { ConversationComponentProps } from '@/types/conversation';
 
+
+console.log("[AGORA UIKIT] AgentVisualizer:", AgentVisualizer);
+console.log(
+  "[AGORA UIKIT] MicButtonWithVisualizer:",
+  MicButtonWithVisualizer
+);
+console.log("[AGORA UIKIT] RemoteUser:", RemoteUser);
+
 // Cap the displayed issues list to avoid overwhelming the UI during a cascade of errors.
 const MAX_CONNECTION_ISSUES = 6;
 
@@ -506,15 +514,14 @@ export default function ConversationComponent({
     onEndConversation();
   }, [onEndConversation]);
 
-  console.log('[RESON COMPONENT CHECK]', {
+  console.log("[CONVERSATION RENDER]", {
     AgentVisualizer,
     MicButtonWithVisualizer,
     RemoteUser,
-    MicrophoneSelector,
-    ConnectionStatusPanel,
-    QuickstartConversationLayout,
-    QuickstartPipelineMetrics,
-    QuickstartTranscriptPanel,
+    visualizerState,
+    remoteUsers: remoteUsers.length,
+    isReady,
+    joinSuccess,
   });
 
   return (
