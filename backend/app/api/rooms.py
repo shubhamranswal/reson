@@ -13,6 +13,11 @@ class JoinRoomRequest(BaseModel):
     agora_uid: str
     role: str = "participant"
 
+
+class SetAgentRequest(BaseModel):
+    agent_id: str
+
+
 @router.get("/{incident_id}")
 def get_room(incident_id: str):
     incident = incident_store.get_incident(incident_id)
@@ -69,17 +74,18 @@ def clear_room_agent(incident_id: str):
 @router.put("/{incident_id}/agent")
 def set_room_agent(
     incident_id: str,
-    agent_id: str,
+    request: SetAgentRequest,
 ):
     room = incident_store.get_or_create_room(incident_id)
 
-    room.agent_id = agent_id
+    room.agent_id = request.agent_id
 
     return {
         "incident_id": incident_id,
         "agent_id": room.agent_id,
         "agent_started": True,
     }
+
 
 @router.post("/leave")
 def leave_room(request: JoinRoomRequest):
