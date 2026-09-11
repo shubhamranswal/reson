@@ -80,3 +80,25 @@ def set_room_agent(
         "agent_id": room.agent_id,
         "agent_started": True,
     }
+
+@router.post("/leave")
+def leave_room(request: JoinRoomRequest):
+    incident = incident_store.get_incident(request.incident_id)
+
+    incident_store.remove_participant(
+        incident_id=request.incident_id,
+        agora_uid=request.agora_uid,
+    )
+
+    room = incident_store.get_or_create_room(request.incident_id)
+
+    return {
+        "incident_id": incident.id,
+        "channel": room.channel,
+        "participants": [
+            p.model_dump(mode="json")
+            for p in incident.participants
+        ],
+        "agent_id": room.agent_id,
+        "agent_started": room.agent_id is not None,
+    }
