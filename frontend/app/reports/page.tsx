@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { Participant } from '@/types/conversation';
 
 type IncidentStatus =
     | 'investigating'
@@ -64,12 +65,6 @@ type Conflict = {
     related_fact_ids: string[];
     related_hypothesis_ids: string[];
     resolved: boolean;
-};
-
-type Participant = {
-    id: string;
-    name: string;
-    role: string;
 };
 
 type Incident = IncidentSummary & {

@@ -3,12 +3,7 @@
 import { useState, useRef, Suspense, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import type { RTMClient } from 'agora-rtm';
-import type {
-  AgoraTokenData,
-  ClientStartRequest,
-  AgentResponse,
-  AgoraRenewalTokens,
-} from '../types/conversation';
+import type { AgoraTokenData, ClientStartRequest, AgentResponse, AgoraRenewalTokens } from '../types/conversation';
 import { ErrorBoundary } from './ErrorBoundary';
 import { LoadingSkeleton } from './LoadingSkeleton';
 import { QuickstartPreCallCard } from './QuickstartPreCallCard';
@@ -33,8 +28,6 @@ const AgoraProvider = dynamic(
       }: {
         children: React.ReactNode;
       }) {
-        // useRef persists across StrictMode's simulated unmount/remount, so only
-        // one RTC client is ever created per session (useMemo creates two in StrictMode).
         const clientRef = useRef<ReturnType<
           typeof AgoraRTC.createClient
         > | null>(null);

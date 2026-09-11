@@ -46,14 +46,6 @@ import {
 import { QuickstartTranscriptPanel } from './QuickstartTranscriptPanel';
 import type { ConversationComponentProps } from '@/types/conversation';
 
-
-console.log("[AGORA UIKIT] AgentVisualizer:", AgentVisualizer);
-console.log(
-  "[AGORA UIKIT] MicButtonWithVisualizer:",
-  MicButtonWithVisualizer
-);
-console.log("[AGORA UIKIT] RemoteUser:", RemoteUser);
-
 // Cap the displayed issues list to avoid overwhelming the UI during a cascade of errors.
 const MAX_CONNECTION_ISSUES = 6;
 
@@ -79,6 +71,7 @@ type RtmSalStatusPayload = {
   timestamp?: number;
 };
 
+
 // Type guard for RTM signaling-level error payloads (object: 'message.error').
 function isRtmMessageErrorPayload(
   value: unknown,
@@ -102,6 +95,7 @@ function isRtmSalStatusPayload(value: unknown): value is RtmSalStatusPayload {
 export default function ConversationComponent({
   agoraData,
   rtmClient,
+  participants,
   onTokenWillExpire,
   onEndConversation,
 }: ConversationComponentProps) {
@@ -164,6 +158,14 @@ export default function ConversationComponent({
     };
   }, []);
 
+  console.log('[RESON DEBUG] useJoin INPUT', {
+    isReady,
+    channel: agoraData.channel,
+    token: agoraData.token ? 'PRESENT' : 'MISSING',
+    uid: agoraData.uid,
+    parsedUid: parseInt(agoraData.uid, 10),
+});
+
   const { isConnected: joinSuccess } = useJoin(
     {
       appid: process.env.NEXT_PUBLIC_AGORA_APP_ID!,
@@ -174,9 +176,26 @@ export default function ConversationComponent({
     isReady,
   );
 
-  useEffect(() => {
-    console.log('[RESON DEBUG] joinSuccess changed:', joinSuccess);
-  }, [joinSuccess]);
+  useClientEvent(client, 'connection-state-change', curState => {
+    console.log('[RESON DEBUG] RTC STATE:', curState);
+    setConnectionState(curState);
+});
+
+useEffect(() => {
+    console.log('[RESON DEBUG] useJoin status:', {
+        isReady,
+        joinSuccess,
+        connectionState,
+        uid: agoraData.uid,
+        channel: agoraData.channel,
+    });
+}, [
+    isReady,
+    joinSuccess,
+    connectionState,
+    agoraData.uid,
+    agoraData.channel,
+]);
 
   // Create mic track only after the StrictMode fake-unmount cycle completes (isReady).
   // Passing `true` here creates two tracks in StrictMode — the first publishes, then
@@ -241,6 +260,14 @@ export default function ConversationComponent({
           renderMode: TranscriptHelperMode.TEXT,
           enableLog: true,
         });
+
+        console.log('[RESON DEBUG] AgoraVoiceAI initialized', {
+    channel: agoraData.channel,
+    browserUid: String(client.uid),
+    expectedAgentUid: agentUID,
+    remoteUsers: remoteUsers.map((user) => String(user.uid)),
+    agentId: agoraData.agentId,
+});
 
         console.log('[RESON DEBUG] AgoraVoiceAI.init SUCCESS');
 
@@ -395,16 +422,10 @@ export default function ConversationComponent({
     };
   }, [rtmClient, addConnectionIssue]);
 
-  // The toolkit uses uid="0" for local user speech — remap to actual RTC UID
-  // so the transcript panel renders user messages on the correct side.
-  // Also normalize punctuation spacing for display when upstream text arrives compacted.
   const transcript = useMemo(() => {
     return normalizeTranscript(rawTranscript, String(client.uid));
   }, [rawTranscript, client.uid]);
 
-  // Completed (END + INTERRUPTED) messages shown as history.
-  // INTERRUPTED must be included — if the agent's first turn is cut off,
-  // messageList stays empty and the first interrupted turn is never shown.
   const messageList = useMemo(() => getMessageList(transcript), [transcript]);
 
   const currentInProgressMessage = useMemo(() => {
@@ -416,11 +437,17 @@ export default function ConversationComponent({
   usePublish([localMicrophoneTrack]);
 
   useClientEvent(client, 'user-joined', (user) => {
+    console.log('[RESON DEBUG] RTC USER JOINED:', {
+        uid: String(user.uid),
+        expectedAgentUid: agentUID,
+        isAgent: String(user.uid) === agentUID,
+    });
+
     if (user.uid.toString() === agentUID) {
-      console.log('[RESON DEBUG] AGENT JOINED:', user.uid);
-      setIsAgentConnected(true);
+        console.log('[RESON DEBUG] AGENT JOINED:', user.uid);
+        setIsAgentConnected(true);
     }
-  });
+});
 
   useClientEvent(client, 'user-left', (user) => {
     if (user.uid.toString() === agentUID) {
@@ -429,13 +456,18 @@ export default function ConversationComponent({
     }
   });
 
-  // Sync isAgentConnected with remoteUsers (covers cases where user-joined/left are missed)
-  useEffect(() => {
-    const isAgentInRemoteUsers = remoteUsers.some(
-      (user) => user.uid.toString() === agentUID,
+useEffect(() => {
+    console.log('[RESON DEBUG] RTC REMOTE USERS:', {
+        expectedAgentUid: agentUID,
+        remoteUsers: remoteUsers.map((user) => String(user.uid)),
+    });
+
+    setIsAgentConnected(
+        remoteUsers.some(
+            (user) => user.uid.toString() === agentUID,
+        ),
     );
-    setIsAgentConnected(isAgentInRemoteUsers);
-  }, [remoteUsers, agentUID]);
+}, [remoteUsers, agentUID]);
 
   useClientEvent(client, 'connection-state-change', (curState) => {
     console.log('[RESON DEBUG] RTC STATE:', curState);
@@ -472,11 +504,6 @@ export default function ConversationComponent({
     [agentState, isAgentConnected, connectionState],
   );
 
-  /**
-   * Mute/unmute via track.setEnabled() only — usePublish owns publish state.
-   * If we also unpublish in the toggle, usePublish and the button fight each other
-   * and break the MicButtonWithVisualizer Web Audio graph.
-   */
   const handleMicToggle = useCallback(async () => {
     const next = !isEnabled;
     const track = localMicrophoneTrack;
@@ -514,16 +541,6 @@ export default function ConversationComponent({
     onEndConversation();
   }, [onEndConversation]);
 
-  console.log("[CONVERSATION RENDER]", {
-    AgentVisualizer,
-    MicButtonWithVisualizer,
-    RemoteUser,
-    visualizerState,
-    remoteUsers: remoteUsers.length,
-    isReady,
-    joinSuccess,
-  });
-
   return (
     <QuickstartConversationLayout
       statusPanel={
@@ -541,6 +558,8 @@ export default function ConversationComponent({
           messageList={messageList}
           currentInProgressMessage={currentInProgressMessage}
           agentUID={agentUID}
+          participants={participants ?? []}
+          currentUserUID={String(client.uid)}
         />
       }
 
