@@ -215,7 +215,7 @@ export default function LandingPage() {
         <header className="flex shrink-0 items-center justify-between border-b border-border/70 bg-background/80 px-4 py-3 backdrop-blur-md md:px-6">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-card text-sm font-bold shadow-sm">
-              R
+              <img src={'/favicon-32x32.png'}></img>
             </div>
 
             <div>
