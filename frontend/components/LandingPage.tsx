@@ -209,7 +209,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="flex h-dvh min-h-screen flex-col overflow-hidden bg-background text-foreground">
+    <div className="flex min-h-screen flex-col bg-background text-foreground lg:h-dvh lg:overflow-hidden">
       <div className="flex min-h-0 flex-1 flex-col">
         {/* Header */}
         <header className="flex shrink-0 items-center justify-between border-b border-border/70 bg-background/80 px-4 py-3 backdrop-blur-md md:px-6">
@@ -232,7 +232,7 @@ export default function LandingPage() {
         </header>
 
         {/* Main workspace */}
-        <div className="flex min-h-0 flex-1 flex-col gap-3 p-3 md:gap-4 md:p-4 lg:flex-row">
+        <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-3 md:gap-4 md:p-4 lg:min-h-0 lg:flex-row lg:overflow-hidden">
           {/* Persistent incident state */}
           <aside className="min-h-0 w-full shrink-0 lg:w-[27rem] xl:w-[30rem]">
             <IncidentDashboard key={activeIncidentId ?? 'active-incident'} />

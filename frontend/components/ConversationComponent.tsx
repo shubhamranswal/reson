@@ -565,7 +565,7 @@ useEffect(() => {
 
       visualizer={
         <div
-          className="relative flex h-full min-h-[24rem] w-full flex-col items-center justify-center"
+          className="relative flex h-full min-h-[18rem] w-full flex-col items-center justify-center sm:min-h-[24rem]"
           role="region"
           aria-label="AI agent status visualization"
         >
@@ -588,7 +588,7 @@ useEffect(() => {
       }
       controls={
         <div
-          className="mx-auto flex w-fit items-center gap-3 rounded-full border border-border bg-card/80 px-4 py-2 backdrop-blur-md"
+          className="mx-auto flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-2 backdrop-blur-md sm:gap-3 sm:px-4"
           role="group"
           aria-label="Audio controls"
         >
