@@ -1332,13 +1332,13 @@ export default function RoomClient({
             }
         }
 
-        sessionStorage.removeItem(`reson:room:${incidentId}:uid`);
+        // sessionStorage.removeItem(`reson:room:${incidentId}:uid`);
 
-        try {
-            await rtmClient?.logout();
-        } catch (error) {
-            console.error('[ROOM] RTM logout error:', error);
-        }
+        // try {
+        //     await rtmClient?.logout();
+        // } catch (error) {
+        //     console.error('[ROOM] RTM logout error:', error);
+        // }
 
         setRtmClient(null);
         setAgoraData(null);
@@ -1421,12 +1421,6 @@ export default function RoomClient({
                                             <option value="product">Product Manager</option>
                                             <option value="manager">Incident Manager</option>
                                         </select>
-
-                                        {error && (
-                                            <p className="mt-3 text-sm text-destructive">
-                                                {error}
-                                            </p>
-                                        )}
 
                                         <button
                                             onClick={joinRoom}

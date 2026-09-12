@@ -158,13 +158,6 @@ export default function ConversationComponent({
     };
   }, []);
 
-  console.log('[RESON DEBUG] useJoin INPUT', {
-    isReady,
-    channel: agoraData.channel,
-    token: agoraData.token ? 'PRESENT' : 'MISSING',
-    uid: agoraData.uid,
-    parsedUid: parseInt(agoraData.uid, 10),
-});
 
   const { isConnected: joinSuccess } = useJoin(
     {
@@ -179,23 +172,23 @@ export default function ConversationComponent({
   useClientEvent(client, 'connection-state-change', curState => {
     console.log('[RESON DEBUG] RTC STATE:', curState);
     setConnectionState(curState);
-});
+  });
 
-useEffect(() => {
+  useEffect(() => {
     console.log('[RESON DEBUG] useJoin status:', {
-        isReady,
-        joinSuccess,
-        connectionState,
-        uid: agoraData.uid,
-        channel: agoraData.channel,
+      isReady,
+      joinSuccess,
+      connectionState,
+      uid: agoraData.uid,
+      channel: agoraData.channel,
     });
-}, [
+  }, [
     isReady,
     joinSuccess,
     connectionState,
     agoraData.uid,
     agoraData.channel,
-]);
+  ]);
 
   // Create mic track only after the StrictMode fake-unmount cycle completes (isReady).
   // Passing `true` here creates two tracks in StrictMode — the first publishes, then
@@ -262,12 +255,12 @@ useEffect(() => {
         });
 
         console.log('[RESON DEBUG] AgoraVoiceAI initialized', {
-    channel: agoraData.channel,
-    browserUid: String(client.uid),
-    expectedAgentUid: agentUID,
-    remoteUsers: remoteUsers.map((user) => String(user.uid)),
-    agentId: agoraData.agentId,
-});
+          channel: agoraData.channel,
+          browserUid: String(client.uid),
+          expectedAgentUid: agentUID,
+          remoteUsers: remoteUsers.map((user) => String(user.uid)),
+          agentId: agoraData.agentId,
+        });
 
         console.log('[RESON DEBUG] AgoraVoiceAI.init SUCCESS');
 
@@ -438,16 +431,16 @@ useEffect(() => {
 
   useClientEvent(client, 'user-joined', (user) => {
     console.log('[RESON DEBUG] RTC USER JOINED:', {
-        uid: String(user.uid),
-        expectedAgentUid: agentUID,
-        isAgent: String(user.uid) === agentUID,
+      uid: String(user.uid),
+      expectedAgentUid: agentUID,
+      isAgent: String(user.uid) === agentUID,
     });
 
     if (user.uid.toString() === agentUID) {
-        console.log('[RESON DEBUG] AGENT JOINED:', user.uid);
-        setIsAgentConnected(true);
+      console.log('[RESON DEBUG] AGENT JOINED:', user.uid);
+      setIsAgentConnected(true);
     }
-});
+  });
 
   useClientEvent(client, 'user-left', (user) => {
     if (user.uid.toString() === agentUID) {
@@ -456,18 +449,18 @@ useEffect(() => {
     }
   });
 
-useEffect(() => {
+  useEffect(() => {
     console.log('[RESON DEBUG] RTC REMOTE USERS:', {
-        expectedAgentUid: agentUID,
-        remoteUsers: remoteUsers.map((user) => String(user.uid)),
+      expectedAgentUid: agentUID,
+      remoteUsers: remoteUsers.map((user) => String(user.uid)),
     });
 
     setIsAgentConnected(
-        remoteUsers.some(
-            (user) => user.uid.toString() === agentUID,
-        ),
+      remoteUsers.some(
+        (user) => user.uid.toString() === agentUID,
+      ),
     );
-}, [remoteUsers, agentUID]);
+  }, [remoteUsers, agentUID]);
 
   useClientEvent(client, 'connection-state-change', (curState) => {
     console.log('[RESON DEBUG] RTC STATE:', curState);
@@ -587,24 +580,28 @@ useEffect(() => {
         </div>
       }
       controls={
-        <div
-          className="mx-auto flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-2 backdrop-blur-md sm:gap-3 sm:px-4"
-          role="group"
-          aria-label="Audio controls"
-        >
-          <div className="conversation-mic-host flex items-center justify-center">
-            <MicButtonWithVisualizer
-              isEnabled={isEnabled}
-              setIsEnabled={setIsEnabled}
-              track={localMicrophoneTrack}
-              onToggle={handleMicToggle}
-              className="overflow-visible"
-              aria-label={isEnabled ? 'Mute microphone' : 'Unmute microphone'}
-              enabledColor="hsl(var(--primary))"
-              disabledColor="hsl(var(--destructive))"
-            />
+        <div className="flex w-full justify-center">
+
+          <div
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-2 backdrop-blur-md sm:gap-3 sm:px-4"
+            role="group"
+            aria-label="Audio controls"
+          >
+            <div className="conversation-mic-host flex items-center justify-center">
+              <MicButtonWithVisualizer
+                isEnabled={isEnabled}
+                setIsEnabled={setIsEnabled}
+                track={localMicrophoneTrack}
+                onToggle={handleMicToggle}
+                className="overflow-visible"
+                aria-label={isEnabled ? 'Mute microphone' : 'Unmute microphone'}
+                enabledColor="hsl(var(--primary))"
+                disabledColor="hsl(var(--destructive))"
+              />
+            </div>
+            <MicrophoneSelector localMicrophoneTrack={localMicrophoneTrack} />
           </div>
-          <MicrophoneSelector localMicrophoneTrack={localMicrophoneTrack} />
+
         </div>
       }
       onEndConversation={handleEndConversation}

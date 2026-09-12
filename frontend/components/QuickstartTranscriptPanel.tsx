@@ -189,6 +189,8 @@ export function QuickstartTranscriptPanel({
       container.scrollTop = container.scrollHeight;
     });
 
+    console.log("MESSAGELIST", messageList);
+
     return () => cancelAnimationFrame(frame);
   }, [messages.length, currentInProgressMessage?.text]);
 
@@ -255,11 +257,13 @@ export function QuickstartTranscriptPanel({
 
                 const participant = participantByUid.get(messageUID);
 
-                const label = isAgent
+                let label = isAgent
                   ? 'Reson'
                   : isCurrentUser
                     ? participant?.name
-                    : 'Unknown participant';
+                    : 'You';
+                
+                    console.log("MESSAGELIST ",label)
                     
                 const text = message.text?.trim();
                 const time = formatMessageTime(message.createdAt);
