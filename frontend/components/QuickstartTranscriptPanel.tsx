@@ -1,5 +1,6 @@
 'use client';
 
+import { Participant } from '@/types/conversation';
 import { useEffect, useMemo, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -15,6 +16,8 @@ type QuickstartTranscriptPanelProps = {
   messageList: TranscriptMessage[];
   currentInProgressMessage: TranscriptMessage | null;
   agentUID: string;
+  participants: Participant[];
+  currentUserUID: string;
 };
 
 function formatMessageTime(createdAt?: number) {
@@ -151,7 +154,10 @@ export function QuickstartTranscriptPanel({
   messageList,
   currentInProgressMessage,
   agentUID,
+  participants,
+  currentUserUID,
 }: QuickstartTranscriptPanelProps) {
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const messages = useMemo(
@@ -162,6 +168,18 @@ export function QuickstartTranscriptPanel({
     [currentInProgressMessage, messageList],
   );
 
+  const participantByUid = useMemo(() => {
+    const map = new Map<string, Participant>();
+
+    for (const participant of participants ?? []) {
+      if (participant.agora_uid) {
+        map.set(String(participant.agora_uid), participant);
+      }
+    }
+
+    return map;
+  }, [participants]);
+
   useEffect(() => {
     const container = scrollRef.current;
 
@@ -171,10 +189,10 @@ export function QuickstartTranscriptPanel({
       container.scrollTop = container.scrollHeight;
     });
 
+    console.log("MESSAGELIST", messageList);
+
     return () => cancelAnimationFrame(frame);
   }, [messages.length, currentInProgressMessage?.text]);
-
-
 
   return (
     <section
@@ -232,8 +250,21 @@ export function QuickstartTranscriptPanel({
           ) : (
             <div className="space-y-5">
               {messages.map((message, index) => {
-                const isAgent = String(message.uid) === agentUID;
-                const label = isAgent ? 'Reson' : 'You';
+                const messageUID = String(message.uid);
+
+                const isAgent = messageUID === agentUID;
+                const isCurrentUser = messageUID === currentUserUID;
+
+                const participant = participantByUid.get(messageUID);
+
+                let label = isAgent
+                  ? 'Reson'
+                  : isCurrentUser
+                    ? participant?.name
+                    : 'You';
+                
+                    console.log("MESSAGELIST ",label)
+                    
                 const text = message.text?.trim();
                 const time = formatMessageTime(message.createdAt);
 

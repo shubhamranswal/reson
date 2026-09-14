@@ -9,8 +9,9 @@ import AgoraRTC, {
   useJoin,
   usePublish,
   RemoteUser,
-  UID,
 } from 'agora-rtc-react';
+
+import type { UID } from 'agora-rtc-react';
 import {
   AgoraVoiceAI,
   AgoraVoiceAIEvents,
@@ -70,6 +71,7 @@ type RtmSalStatusPayload = {
   timestamp?: number;
 };
 
+
 // Type guard for RTM signaling-level error payloads (object: 'message.error').
 function isRtmMessageErrorPayload(
   value: unknown,
@@ -93,6 +95,7 @@ function isRtmSalStatusPayload(value: unknown): value is RtmSalStatusPayload {
 export default function ConversationComponent({
   agoraData,
   rtmClient,
+  participants,
   onTokenWillExpire,
   onEndConversation,
 }: ConversationComponentProps) {
@@ -155,6 +158,7 @@ export default function ConversationComponent({
     };
   }, []);
 
+
   const { isConnected: joinSuccess } = useJoin(
     {
       appid: process.env.NEXT_PUBLIC_AGORA_APP_ID!,
@@ -165,9 +169,26 @@ export default function ConversationComponent({
     isReady,
   );
 
+  useClientEvent(client, 'connection-state-change', curState => {
+    console.log('[RESON DEBUG] RTC STATE:', curState);
+    setConnectionState(curState);
+  });
+
   useEffect(() => {
-    console.log('[RESON DEBUG] joinSuccess changed:', joinSuccess);
-  }, [joinSuccess]);
+    console.log('[RESON DEBUG] useJoin status:', {
+      isReady,
+      joinSuccess,
+      connectionState,
+      uid: agoraData.uid,
+      channel: agoraData.channel,
+    });
+  }, [
+    isReady,
+    joinSuccess,
+    connectionState,
+    agoraData.uid,
+    agoraData.channel,
+  ]);
 
   // Create mic track only after the StrictMode fake-unmount cycle completes (isReady).
   // Passing `true` here creates two tracks in StrictMode — the first publishes, then
@@ -211,6 +232,7 @@ export default function ConversationComponent({
   //     subsequent state changes (`joinSuccess` becoming true). That means
   //     AgoraVoiceAI.init() is called exactly once.
   useEffect(() => {
+
     if (!isReady || !joinSuccess) return;
 
     let cancelled = false;
@@ -230,6 +252,14 @@ export default function ConversationComponent({
             : {}),
           renderMode: TranscriptHelperMode.TEXT,
           enableLog: true,
+        });
+
+        console.log('[RESON DEBUG] AgoraVoiceAI initialized', {
+          channel: agoraData.channel,
+          browserUid: String(client.uid),
+          expectedAgentUid: agentUID,
+          remoteUsers: remoteUsers.map((user) => String(user.uid)),
+          agentId: agoraData.agentId,
         });
 
         console.log('[RESON DEBUG] AgoraVoiceAI.init SUCCESS');
@@ -331,6 +361,7 @@ export default function ConversationComponent({
 
   // Raw RTM parsing is kept as a fallback for signaling-level errors and SAL status.
   useEffect(() => {
+    if (!rtmClient) return;
     const handleRtmMessage = (event: {
       message: string | Uint8Array;
       publisher: string;
@@ -384,16 +415,10 @@ export default function ConversationComponent({
     };
   }, [rtmClient, addConnectionIssue]);
 
-  // The toolkit uses uid="0" for local user speech — remap to actual RTC UID
-  // so the transcript panel renders user messages on the correct side.
-  // Also normalize punctuation spacing for display when upstream text arrives compacted.
   const transcript = useMemo(() => {
     return normalizeTranscript(rawTranscript, String(client.uid));
   }, [rawTranscript, client.uid]);
 
-  // Completed (END + INTERRUPTED) messages shown as history.
-  // INTERRUPTED must be included — if the agent's first turn is cut off,
-  // messageList stays empty and the first interrupted turn is never shown.
   const messageList = useMemo(() => getMessageList(transcript), [transcript]);
 
   const currentInProgressMessage = useMemo(() => {
@@ -405,6 +430,12 @@ export default function ConversationComponent({
   usePublish([localMicrophoneTrack]);
 
   useClientEvent(client, 'user-joined', (user) => {
+    console.log('[RESON DEBUG] RTC USER JOINED:', {
+      uid: String(user.uid),
+      expectedAgentUid: agentUID,
+      isAgent: String(user.uid) === agentUID,
+    });
+
     if (user.uid.toString() === agentUID) {
       console.log('[RESON DEBUG] AGENT JOINED:', user.uid);
       setIsAgentConnected(true);
@@ -418,12 +449,17 @@ export default function ConversationComponent({
     }
   });
 
-  // Sync isAgentConnected with remoteUsers (covers cases where user-joined/left are missed)
   useEffect(() => {
-    const isAgentInRemoteUsers = remoteUsers.some(
-      (user) => user.uid.toString() === agentUID,
+    console.log('[RESON DEBUG] RTC REMOTE USERS:', {
+      expectedAgentUid: agentUID,
+      remoteUsers: remoteUsers.map((user) => String(user.uid)),
+    });
+
+    setIsAgentConnected(
+      remoteUsers.some(
+        (user) => user.uid.toString() === agentUID,
+      ),
     );
-    setIsAgentConnected(isAgentInRemoteUsers);
   }, [remoteUsers, agentUID]);
 
   useClientEvent(client, 'connection-state-change', (curState) => {
@@ -461,11 +497,6 @@ export default function ConversationComponent({
     [agentState, isAgentConnected, connectionState],
   );
 
-  /**
-   * Mute/unmute via track.setEnabled() only — usePublish owns publish state.
-   * If we also unpublish in the toggle, usePublish and the button fight each other
-   * and break the MicButtonWithVisualizer Web Audio graph.
-   */
   const handleMicToggle = useCallback(async () => {
     const next = !isEnabled;
     const track = localMicrophoneTrack;
@@ -489,7 +520,9 @@ export default function ConversationComponent({
         joinedUID.toString(),
       );
       await client?.renewToken(rtcToken);
-      await rtmClient.renewToken(rtmToken);
+      if (rtmClient) {
+        await rtmClient.renewToken(rtmToken);
+      }
     } catch (error) {
       console.error('Failed to renew Agora token:', error);
     }
@@ -518,12 +551,14 @@ export default function ConversationComponent({
           messageList={messageList}
           currentInProgressMessage={currentInProgressMessage}
           agentUID={agentUID}
+          participants={participants ?? []}
+          currentUserUID={String(client.uid)}
         />
       }
 
       visualizer={
         <div
-          className="relative flex h-full min-h-[24rem] w-full flex-col items-center justify-center"
+          className="relative flex h-full min-h-[18rem] w-full flex-col items-center justify-center sm:min-h-[24rem]"
           role="region"
           aria-label="AI agent status visualization"
         >
@@ -545,24 +580,28 @@ export default function ConversationComponent({
         </div>
       }
       controls={
-        <div
-          className="mx-auto flex w-fit items-center gap-3 rounded-full border border-border bg-card/80 px-4 py-2 backdrop-blur-md"
-          role="group"
-          aria-label="Audio controls"
-        >
-          <div className="conversation-mic-host flex items-center justify-center">
-            <MicButtonWithVisualizer
-              isEnabled={isEnabled}
-              setIsEnabled={setIsEnabled}
-              track={localMicrophoneTrack}
-              onToggle={handleMicToggle}
-              className="overflow-visible"
-              aria-label={isEnabled ? 'Mute microphone' : 'Unmute microphone'}
-              enabledColor="hsl(var(--primary))"
-              disabledColor="hsl(var(--destructive))"
-            />
+        <div className="flex w-full justify-center">
+
+          <div
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-2 backdrop-blur-md sm:gap-3 sm:px-4"
+            role="group"
+            aria-label="Audio controls"
+          >
+            <div className="conversation-mic-host flex items-center justify-center">
+              <MicButtonWithVisualizer
+                isEnabled={isEnabled}
+                setIsEnabled={setIsEnabled}
+                track={localMicrophoneTrack}
+                onToggle={handleMicToggle}
+                className="overflow-visible"
+                aria-label={isEnabled ? 'Mute microphone' : 'Unmute microphone'}
+                enabledColor="hsl(var(--primary))"
+                disabledColor="hsl(var(--destructive))"
+              />
+            </div>
+            <MicrophoneSelector localMicrophoneTrack={localMicrophoneTrack} />
           </div>
-          <MicrophoneSelector localMicrophoneTrack={localMicrophoneTrack} />
+
         </div>
       }
       onEndConversation={handleEndConversation}

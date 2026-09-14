@@ -78,7 +78,8 @@ class Conflict(BaseModel):
 class Participant(BaseModel):
     id: str
     name: str
-    role: str
+    role: str = "participant"
+    agora_uid: str | None = None
 
 class IncidentRoom(BaseModel):
     channel: str

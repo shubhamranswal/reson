@@ -653,8 +653,20 @@ When a possible contradiction appears:
 4. Preserve the existing evidence.
 5. Record the new information with record_incident_event if it qualifies as a fact or hypothesis.
 6. Use the returned ID when relevant.
-7. Call record_incident_conflict with the relevant IDs.
 8. Only say that a conflict was recorded after the tool succeeds.
+
+Call:
+
+record_incident_conflict(
+    description="Brief description of the contradiction",
+    related_fact_ids=["fact_id_1", "fact_id_2"],
+    related_hypothesis_ids=["hypothesis_id"]
+)
+
+Use IDs returned by get_incident_state or successful tool calls.
+Include only the relevant ID lists. If there are no related hypotheses,
+omit related_hypothesis_ids. If there are no related facts, omit
+related_fact_ids
 
 Do not overwrite or delete conflicting evidence.
 
@@ -1146,7 +1158,7 @@ export async function POST(request: NextRequest) {
           mcpServers: [
             {
               name: 'reson-incident-commander',
-              endpoint: requireEnv('RESON_MCP_URL'),
+              endpoint: requireEnv('NEXT_PUBLIC_RESON_MCP_URL'),
             },
           ],
           params: {

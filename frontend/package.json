@@ -1,15 +1,15 @@
 {
-  "name": "convoai-quickstart-web-nextjs",
+  "name": "reson-frontend",
   "version": "0.1.0",
-  "description": "Next.js quickstart for building conversational AI applications with Agora's Conversational AI Engine",
   "private": true,
   "engines": {
-    "node": ">=22"
+    "node": "22.x"
   },
+  "packageManager": "pnpm@11.25.0",
   "scripts": {
     "doctor": "node scripts/doctor.mjs",
     "dev": "next dev --webpack",
-    "build": "next build",
+    "build": "node scripts/check-agora.js && next build --webpack",
     "start": "next start",
     "lint": "eslint .",
     "verify:api": "node --import tsx scripts/verify-api-contracts.ts",
@@ -31,6 +31,8 @@
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
     "lucide-react": "^0.454.0",
     "next": "^16.2.6",
     "react": "^19.0.0",

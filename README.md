@@ -1,6 +1,22 @@
+<img src="https://komarev.com/ghpvc/?username=shubhamranswal&color=00000000&label=" width="1" height="1" />
+<div align="center">
+
+<img src="docs/reson-icon.png" alt="Reson icon" width="96" />
+
 # Reson
 
-## AI Incident Commander for real-time incident response
+### AI Incident Commander for real-time incident response
+
+**Voice in → structured operational intelligence out.**
+
+[![Voice AI](https://img.shields.io/badge/Voice-AI-111827?style=flat-square)](https://www.agora.io/)
+[![Backend](https://img.shields.io/badge/Backend-FastAPI-111827?style=flat-square)](https://fastapi.tiangolo.com/)
+[![Frontend](https://img.shields.io/badge/Frontend-Next.js-111827?style=flat-square)](https://nextjs.org/)
+[![MCP](https://img.shields.io/badge/Tools-MCP-111827?style=flat-square)](https://modelcontextprotocol.io/)
+[![Python](https://img.shields.io/badge/Python-3.x-111827?style=flat-square)](https://www.python.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-111827?style=flat-square)](https://www.typescriptlang.org/)
+
+</div>
 
 Reson is a voice-first AI Incident Commander built to help engineering
 teams reason through live technical incidents.
@@ -18,7 +34,6 @@ structured operational picture of the incident:
 The result is a system that turns a live voice conversation into an
 evolving incident state and an actionable post-incident report.
 
-> **Voice in → structured operational intelligence out.**
 
 ------------------------------------------------------------------------
 
@@ -44,9 +59,56 @@ It listens to the live discussion, reasons over the current incident
 context, selectively updates structured state, and uses that state to
 help the team maintain a coherent operational picture.
 
+## Demo
+
+### 🎥 Reson MVP Demo
+
+> A short walkthrough of Reson as an AI Incident Commander,
+> from live incident conversation to structured state and reporting.
+
+**[▶ Watch the full MVP demo](docs/Reson.mp4)**
+
+### The demo covers
+
+- 🎙️ Real-time, interruptible voice interaction
+- 🧠 Context-aware incident reasoning
+- 📋 Structured incident state
+- 🔌 MCP-powered incident tools
+- ⚠️ Conflict and hypothesis tracking
+- 👥 Multi-participant incident room
+- 🔄 Multi-incident workflow
+- 📊 Incident reporting
+- 📄 PDF export
+
 ------------------------------------------------------------------------
 
 # What Reson Does
+
+## Project at a glance
+
+``` text
+Human responders
+      │
+      ▼
+Real-time voice conversation
+      │
+      ▼
+Reson AI Incident Commander
+      │
+      ├── Reason over current context
+      ├── Decide when to intervene
+      └── Use structured MCP tools
+                    │
+                    ▼
+          Incident State
+     Facts · Hypotheses · Decisions
+     Actions · Conflicts · Timeline
+                    │
+          ┌─────────┴─────────┐
+          ▼                   ▼
+     Live Dashboard        Report / PDF
+```
+
 
 ### Real-time voice interaction
 
@@ -312,6 +374,8 @@ while database health checks remain green.
 
 # MCP Layer
 
+Reson uses a **custom MCP server** named `reson-incident-commander`.
+
 The FastAPI backend exposes the MCP server at:
 
 ``` text
@@ -344,6 +408,28 @@ Incident management
 
 The agent is instructed to use tools when they improve the operational
 picture, not simply because every user utterance could be classified.
+
+### Why MCP?
+
+MCP provides a clean boundary between AI reasoning and application state.
+The model reasons about the incident, while explicit tools perform structured
+reads and writes against the incident system.
+
+``` text
+Live Voice
+    ↓
+Reson / LLM reasoning
+    ↓
+MCP tools
+    ↓
+Structured Incident State
+    ↓
+Dashboard + Reports
+```
+
+This makes the **incident state**, rather than the generated conversation,
+the operational source of truth.
+
 
 ------------------------------------------------------------------------
 
@@ -398,6 +484,25 @@ reson/
   Reporting                    Next.js reporting workspace
   PDF export                   Browser-side PDF generation
   Public MCP access for demo   Cloudflare Tunnel
+
+------------------------------------------------------------------------
+
+# Built With
+
+| Area | Technology | Role |
+| --- | --- | --- |
+| Web app | **Next.js / React / TypeScript** | Incident dashboard and voice UI |
+| API | **FastAPI / Python** | Application API and MCP host |
+| Voice agent | **Agora Conversational AI** | Real-time conversational agent |
+| RTC / RTM | **Agora** | Live incident-room communication |
+| Speech-to-text | **Deepgram** | Transcription |
+| Reasoning | **OpenAI** | Incident reasoning and tool selection |
+| Text-to-speech | **MiniMax** | Agent voice |
+| Agent tools | **Model Context Protocol (MCP)** | Structured incident-state access |
+| Data model | **Pydantic** | Typed incident state and validation |
+| Reporting | **Next.js reporting workspace** | Incident reports and analytics |
+| PDF | **Browser-side PDF generation** | Report export |
+| Demo networking | **Cloudflare Tunnel** | Public MCP endpoint for the demo |
 
 ------------------------------------------------------------------------
 
@@ -800,6 +905,55 @@ Critical operational actions can require human confirmation.
 
 ------------------------------------------------------------------------
 
+# Security & Operational Boundaries
+
+Reson is a hackathon/MVP prototype and should not be connected to production
+systems without additional controls.
+
+Important boundaries:
+
+- Keep provider credentials and tokens out of source control.
+- Do not commit `.env` files or secrets.
+- Critical or destructive operational actions should remain human-approved.
+- The current incident store is in-memory and is not a durable production database.
+- The multi-participant room implementation is a foundation for shared sessions,
+  not a production-grade conferencing/identity system.
+- Add authentication, authorization, audit logging, persistence, and
+  observability before using Reson for real incidents.
+
+------------------------------------------------------------------------
+
+# Open Source
+
+Reson is intended to be developed as an open-source project.
+
+## Contributing
+
+Contributions, experiments, bug fixes, and ideas are welcome.
+
+A good contribution flow is:
+
+1. Fork the repository.
+2. Create a focused branch.
+3. Make the change and add/update tests where appropriate.
+4. Run the frontend and backend checks locally.
+5. Open a pull request describing the problem and the change.
+
+For larger architectural changes, open an issue first so the approach can be
+discussed before implementation.
+
+## Development Guidelines
+
+- Keep incident state explicit and structured.
+- Prefer evidence over speculation.
+- Keep critical operational actions human-controlled.
+- Avoid coupling the UI directly to provider-specific agent behavior.
+- Keep MCP tools small, explicit, and auditable.
+- Do not add state to the transcript when it belongs in the incident model.
+
+
+------------------------------------------------------------------------
+
 # Current Status
 
 ### Completed
@@ -827,10 +981,16 @@ Critical operational actions can require human confirmation.
 
 The participant and room model provides the foundation for:
 
--   shared multi-browser Agora rooms
--   one Reson agent per incident room
--   multiple participants sharing one Reson session
 -   participant presence and role-aware interaction
+-   multi speaker detection in rooms
+-   authentication and role-based access control
+-   production observability integrations for logs, metrics, and deployments
+-   robust multi-user Agora room coordination
+-   participant presence and speaker attribution
+-   one-agent-per-room lifecycle guarantees
+-   audit logs for state changes and tool calls
+-   richer remediation workflows with approval gates
+-   intelligent MCP tools that make interactions more specific
 
 ------------------------------------------------------------------------
 
@@ -852,9 +1012,3 @@ The long-term goal is simple:
 > **When an incident gets chaotic, Reson keeps the team's understanding
 > coherent.**
 
-------------------------------------------------------------------------
-
-## Built for real-time incident response
-
-**Reson**\
-*AI Incident Commander*

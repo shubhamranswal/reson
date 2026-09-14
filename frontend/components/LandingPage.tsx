@@ -3,12 +3,7 @@
 import { useState, useRef, Suspense, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import type { RTMClient } from 'agora-rtm';
-import type {
-  AgoraTokenData,
-  ClientStartRequest,
-  AgentResponse,
-  AgoraRenewalTokens,
-} from '../types/conversation';
+import type { AgoraTokenData, ClientStartRequest, AgentResponse, AgoraRenewalTokens } from '../types/conversation';
 import { ErrorBoundary } from './ErrorBoundary';
 import { LoadingSkeleton } from './LoadingSkeleton';
 import { QuickstartPreCallCard } from './QuickstartPreCallCard';
@@ -33,8 +28,6 @@ const AgoraProvider = dynamic(
       }: {
         children: React.ReactNode;
       }) {
-        // useRef persists across StrictMode's simulated unmount/remount, so only
-        // one RTC client is ever created per session (useMemo creates two in StrictMode).
         const clientRef = useRef<ReturnType<
           typeof AgoraRTC.createClient
         > | null>(null);
@@ -57,10 +50,6 @@ const AgoraProvider = dynamic(
 
 export default function LandingPage() {
   const [showConversation, setShowConversation] = useState(false);
-
-  const sendAgentMessageRef = useRef<
-    ((message: string) => Promise<void>) | null
-  >(null);
 
   // Preload heavy modules on mount so they're already cached when the user
   // clicks "Try it Now" — eliminates the ~1.8s dynamic-import delay.
@@ -220,13 +209,13 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="flex h-dvh min-h-screen flex-col overflow-hidden bg-background text-foreground">
+    <div className="flex min-h-screen flex-col bg-background text-foreground lg:h-dvh lg:overflow-hidden">
       <div className="flex min-h-0 flex-1 flex-col">
         {/* Header */}
         <header className="flex shrink-0 items-center justify-between border-b border-border/70 bg-background/80 px-4 py-3 backdrop-blur-md md:px-6">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-card text-sm font-bold shadow-sm">
-              R
+              <img src={'/favicon-32x32.png'}></img>
             </div>
 
             <div>
@@ -243,7 +232,7 @@ export default function LandingPage() {
         </header>
 
         {/* Main workspace */}
-        <div className="flex min-h-0 flex-1 flex-col gap-3 p-3 md:gap-4 md:p-4 lg:flex-row">
+        <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-3 md:gap-4 md:p-4 lg:min-h-0 lg:flex-row lg:overflow-hidden">
           {/* Persistent incident state */}
           <aside className="min-h-0 w-full shrink-0 lg:w-[27rem] xl:w-[30rem]">
             <IncidentDashboard key={activeIncidentId ?? 'active-incident'} />
