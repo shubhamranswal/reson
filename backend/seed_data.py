@@ -7,7 +7,7 @@ from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 
 
-BASE_URL = "https://reson-ai.onrender.com"
+BASE_URL = "<backend_url>"
 MCP_URL = f"{BASE_URL}/mcp"
 
 
