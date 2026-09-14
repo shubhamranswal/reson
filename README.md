@@ -66,7 +66,7 @@ help the team maintain a coherent operational picture.
 > A short walkthrough of Reson as an AI Incident Commander,
 > from live incident conversation to structured state and reporting.
 
-**[▶ Watch the full MVP demo](docs/demo.mp4)**
+**[▶ Watch the full MVP demo](docs/Reson.mp4)**
 
 ### The demo covers
 
